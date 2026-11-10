@@ -229,7 +229,11 @@
   const MODEL_W = 1.45;        // widest diameter
   const MODEL_MID = -0.035;    // model y at the vertical middle
   const HEADROOM = 1.3;        // room for perspective, tilt toward the cursor and the click squish
-  const flaskLayout = (w, h) => {
+  // Dots have a fixed pixel size, so a smaller flask packs them tighter until it reads as a
+  // dark blob. Match the ink density of the approved desktop flask (1440x900, ~83k dots).
+  const REF_H = 470;           // just under heightPx of the flask at 1440x900 (its outline measures ~562px)
+  const REF_COUNT = 83100;     // buildCloud(80000) incl. face points
+  const flaskLayout = (w, h, count = REF_COUNT) => {
     const c = canvas.getBoundingClientRect();
     const nav = $("#nav");
     const mobile = w <= 860;
@@ -250,7 +254,10 @@
     const scale = heightPx / MODEL_H / (h / 2);
     const cx = ((left + right) / 2 / w) * 2 - 1;
     const cy = 1 - ((top + bottom) / 2 / h) * 2 - MODEL_MID * scale;
-    return { cx, cy, scale, dot: mobile ? 0.95 : 1 };
+    const size = Math.min(1, heightPx / REF_H);
+    const dot = mobile ? 0.75 + 0.25 * size : 1; // slightly finer dots keep more detail when small
+    const keep = Math.min(1, (size * size * (REF_COUNT / count)) / (dot * dot));
+    return { cx, cy, scale, dot, keep };
   };
   if (canvas && window.YummFlask) {
     try {

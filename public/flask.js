@@ -21,7 +21,8 @@ attribute vec3 aPos;
 attribute vec3 aNormal;
 attribute float aSeed;
 attribute float aKind;
-uniform float uTime, uAssemble, uYaw, uPitch, uRoll, uMouseOn, uScale, uDpr, uGrid, uAspect, uDot, uBlink, uSquish, uLevel, uEyeY, uBurst;
+attribute float aCull; // uniform [0,1) from Math.random; GPU sin-hashes cluster near 1
+uniform float uTime, uAssemble, uYaw, uPitch, uRoll, uMouseOn, uScale, uDpr, uGrid, uAspect, uDot, uBlink, uSquish, uLevel, uEyeY, uBurst, uKeep;
 uniform vec2 uMouse, uRes, uCenter, uLook;
 uniform vec3 uInk, uLime, uOlive, uDeep, uBlush, uPaper;
 varying float vAlpha;
@@ -43,6 +44,15 @@ void main() {
   bool cheek = aKind > 5.5 && aKind < 6.5;
   bool smile = aKind > 6.5 && aKind < 7.5;
   bool spark = aKind > 7.5;
+
+  // thin the cloud on small flasks so the dots don't merge into a blob (bubbles always stay)
+  if (!bubble && aCull >= uKeep) {
+    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    gl_PointSize = 0.0;
+    vAlpha = 0.0;
+    vColor = vec3(0.0);
+    return;
+  }
 
   if (surface || liquid) {
     float wave = sin(p.x * 7.0 + uTime * 1.7) * 0.016 + cos(p.z * 6.0 + uTime * 1.3) * 0.012;
@@ -178,8 +188,8 @@ void main() {
   }
 
   function buildCloud(total) {
-    const pos = [], nrm = [], seed = [], kind = [];
-    const push = (x, y, z, nx, ny, nz, k) => { pos.push(x, y, z); nrm.push(nx, ny, nz); seed.push(Math.random()); kind.push(k); };
+    const pos = [], nrm = [], seed = [], kind = [], cull = [];
+    const push = (x, y, z, nx, ny, nz, k) => { pos.push(x, y, z); nrm.push(nx, ny, nz); seed.push(Math.random()); kind.push(k); cull.push(Math.random()); };
 
     // glass: area-weighted samples along the profile, revolved
     const segs = [];
@@ -253,7 +263,7 @@ void main() {
     blob(-EYE_X + 0.018, EYE_Y + 0.026, 0.016, 0.018, Math.round(260 * faceN), 8); // sparkles
     blob(EYE_X + 0.018, EYE_Y + 0.026, 0.016, 0.018, Math.round(260 * faceN), 8);
 
-    return { pos: new Float32Array(pos), nrm: new Float32Array(nrm), seed: new Float32Array(seed), kind: new Float32Array(kind), count: seed.length };
+    return { pos: new Float32Array(pos), nrm: new Float32Array(nrm), seed: new Float32Array(seed), kind: new Float32Array(kind), cull: new Float32Array(cull), count: seed.length };
   }
 
   function toRGB(css, fallback) {
@@ -300,10 +310,11 @@ void main() {
     attr("aNormal", cloud.nrm, 3);
     attr("aSeed", cloud.seed, 1);
     attr("aKind", cloud.kind, 1);
+    attr("aCull", cloud.cull, 1);
 
     const U = {};
     ["uTime", "uAssemble", "uYaw", "uPitch", "uRoll", "uMouseOn", "uScale", "uDpr", "uGrid", "uAspect", "uDot", "uBlink", "uSquish",
-      "uLevel", "uEyeY", "uBurst", "uMouse", "uRes", "uCenter", "uLook", "uInk", "uLime", "uOlive", "uDeep", "uBlush", "uPaper"]
+      "uLevel", "uEyeY", "uBurst", "uKeep", "uMouse", "uRes", "uCenter", "uLook", "uInk", "uLime", "uOlive", "uDeep", "uBlush", "uPaper"]
       .forEach((k) => { U[k] = gl.getUniformLocation(prog, k); });
 
     const css = getComputedStyle(document.documentElement);
@@ -337,7 +348,7 @@ void main() {
       H = Math.max(1, Math.round(r.height * dpr));
       canvas.width = W; canvas.height = H;
       gl.viewport(0, 0, W, H);
-      layoutNow = layout ? layout(r.width, r.height) : layoutNow;
+      layoutNow = layout ? layout(r.width, r.height, cloud.count) : layoutNow;
       gl.uniform2f(U.uRes, W, H);
       gl.uniform2f(U.uCenter, layoutNow.cx, layoutNow.cy);
       gl.uniform1f(U.uScale, layoutNow.scale);
@@ -345,6 +356,7 @@ void main() {
       gl.uniform1f(U.uDpr, dpr);
       gl.uniform1f(U.uGrid, 7 * dpr);
       gl.uniform1f(U.uDot, layoutNow.dot || 1);
+      gl.uniform1f(U.uKeep, layoutNow.keep ?? 1);
       if (reduce) draw();
     }
 
