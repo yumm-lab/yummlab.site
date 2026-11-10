@@ -162,7 +162,7 @@ button { font: inherit; color: inherit; }
 }
 .nav__status > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .nav__muted { color: var(--color-ink-3); }
-.nav.is-compact .nav__status { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+.nav.is-compact .nav__status, .nav:has(.menu:not([hidden])) .nav__status { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 
 .lang { display: inline-flex; padding: 3px; border-radius: var(--radius-pill); background: var(--color-night-2); }
 .lang__btn {
@@ -405,6 +405,8 @@ button { font: inherit; color: inherit; }
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
   .nav__links { display: none; }
+  /* hidden links still match the `+` sibling rule, which would drop nav__end's auto margin */
+  .nav__links + .nav__end { margin-left: auto; }
   .nav__menu { display: block; }
   .pains { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .pain:nth-child(3) { padding-left: 0; border-left: 0; }
