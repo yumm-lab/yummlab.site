@@ -1,7 +1,17 @@
-# Cloudflare Workers static assets: serves ./public as-is (no Worker script, no build step).
-# _headers in ./public is applied by Cloudflare (CSP, nosniff, cache rules).
+# Cloudflare Workers static assets. src/worker.js only redirects www/http to
+# https://yummlab.site; all other requests go to ./public, where _headers sets
+# CSP, HSTS, nosniff and cache rules.
 name = "yummlab-site"
+main = "src/worker.js"
 compatibility_date = "2026-10-01"
+
+# Custom domains: Cloudflare creates the DNS records and the TLS certificate.
+routes = [
+  { pattern = "yummlab.site", custom_domain = true },
+  { pattern = "www.yummlab.site", custom_domain = true },
+]
 
 [assets]
 directory = "./public"
+binding = "ASSETS"
+run_worker_first = true

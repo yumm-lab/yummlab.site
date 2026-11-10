@@ -23,11 +23,13 @@ python3 -m http.server 8765
 | `public/flask.js` | The 3D particle flask mascot (plain WebGL, no library). |
 | `public/vendor/` | GSAP 3.15.0, ScrollTrigger, Lenis 1.3.27, pinned copies. |
 | `public/_headers` | Cloudflare security and cache headers (CSP and friends). |
+| `src/worker.js` | Redirects `www` and `http` to `https://yummlab.site`. |
 
 ## Deploy
 
-Cloudflare Workers static assets, Worker `yummlab-site` (see `wrangler.toml`).
-Pushing to `main` deploys through the Cloudflare Git integration. Manual deploy:
+Cloudflare Workers static assets, Worker `yummlab-site` (see `wrangler.toml`),
+served at https://yummlab.site. `src/worker.js` only redirects `www` and plain
+`http` to `https://yummlab.site`; every other request is served from `public/`.
 
 ```sh
 npx wrangler login
