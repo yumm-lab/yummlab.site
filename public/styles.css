@@ -420,12 +420,20 @@ button { font: inherit; color: inherit; }
   .head__aside, .faces { justify-self: start; }
   .faces { max-width: 340px; gap: var(--space-sm); }
   .faq__copy { position: static; }
-  .hero { padding-top: 48svh; }
-  .hero__canvas { inset: 0 0 auto 0; height: 50svh; }
+  /* like desktop: the first screen holds flask + copy; facts follow below it.
+     Copy sits at the bottom, flaskLayout() fits the flask into whatever is left above it.
+     Padding-top = nav pill + status tab (~110px) + a 170px floor for the flask box. */
+  .hero { padding-top: 0; }
+  .hero__canvas { inset: 0 0 auto 0; height: 100svh; }
   .hero::before { background: radial-gradient(50% 30% at 50% 22%, oklch(91% 0.2 110 / 0.25), transparent 70%), radial-gradient(var(--color-rule-strong) 1px, transparent 1.2px) 0 0 / 22px 22px; -webkit-mask-image: radial-gradient(80% 40% at 50% 22%, #000 30%, transparent 80%); mask-image: radial-gradient(80% 40% at 50% 22%, #000 30%, transparent 80%); }
   .hero__fallback { right: 50%; translate: 50% 0; top: 100px; width: 36%; }
-  .hero__inner { align-items: end; }
-  .hero__copy { max-width: 100%; padding-block: var(--space-lg); }
+  .hero__inner { align-items: end; min-height: 100svh; padding-top: calc(var(--nav-top) + var(--nav-h) + 36px + 170px); }
+  .hero__copy { max-width: 100%; gap: var(--space-md); padding-block: var(--space-md) var(--space-xl); }
+  /* fill the width like the desktop title does; 6.3em = longest line ("side projects.", 6.09em) + slack */
+  .hero__title { font-size: clamp(2.5rem, (100vw - 2 * var(--page-gutter)) / 6.3, 4.75rem); }
+  .hero__lede { font-size: var(--text-base); }
+  .hero__actions .btn--lg { height: 50px; padding-left: 22px; font-size: var(--text-sm); }
+  .hero__actions .btn--lg .btn__icon { width: 38px; height: 38px; }
   .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .facts > div:nth-child(3) { padding-left: 0; border-left: 0; }
   .facts > div:nth-child(n + 3) { border-top: 1px solid var(--color-rule); padding-bottom: var(--space-sm); }
