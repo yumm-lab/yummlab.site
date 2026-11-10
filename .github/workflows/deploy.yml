@@ -1,0 +1,59 @@
+# Deploy yummlab.site to Cloudflare Workers static assets on every push to main
+# that touches the site. Same as running `npx wrangler deploy` locally.
+#
+# Needs, in the "production" environment (Settings > Environments):
+#   CLOUDFLARE_API_TOKEN   custom token: Account > Workers Scripts: Edit,
+#                          Zone (yummlab.site) > Workers Routes: Edit, Zone: Read
+#   CLOUDFLARE_ACCOUNT_ID  account that owns the yummlab-site Worker
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/**"
+      - "src/**"
+      - "wrangler.toml"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# one deploy at a time; never cancel one halfway through
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: production
+      url: https://yummlab.site
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Deploy with Wrangler
+        uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.153.0"
+          command: deploy
+
+      # The live site must serve exactly what was just deployed.
+      - name: Smoke check
+        run: |
+          set -euo pipefail
+          curl -fsS --retry 5 --retry-delay 3 -o /dev/null https://yummlab.site/
+          for f in index.html styles.css main.js; do
+            path="/$f"; [ "$f" = index.html ] && path="/"
+            curl -fsS --retry 5 --retry-delay 3 "https://yummlab.site$path" | cmp -s - "public/$f" \
+              || { echo "::error::live $path differs from public/$f"; exit 1; }
+          done
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://www.yummlab.site/)
+          [ "$code" = 301 ] || { echo "::error::www redirect returned $code, want 301"; exit 1; }
