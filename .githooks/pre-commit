@@ -1,0 +1,13 @@
+#!/bin/sh
+# Blocks commits that look like they contain credentials. Second line of defence;
+# GitHub push protection is the first. Bypass only if you are sure: git commit --no-verify
+pattern='(AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}|gho_[A-Za-z0-9]{30,}|sk-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{10,}|AIza[0-9A-Za-z_-]{35}|-----BEGIN [A-Z ]*PRIVATE KEY-----|CLOUDFLARE_API_TOKEN *= *[^ ]+|api[_-]?key["'"'"' ]*[:=] *["'"'"'][A-Za-z0-9_-]{16,})'
+bad=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)(\.env(\..*)?|\.dev\.vars|.*\.pem|.*\.key)$')
+if [ -n "$bad" ]; then
+  echo "pre-commit: refusing to commit secret-looking files:"; echo "$bad"; exit 1
+fi
+hits=$(git diff --cached -U0 --diff-filter=ACM -- . ':(exclude)public/vendor/*' | grep -E '^\+' | grep -nE "$pattern")
+if [ -n "$hits" ]; then
+  echo "pre-commit: possible secret in staged changes:"; echo "$hits" | cut -c1-160; exit 1
+fi
+exit 0

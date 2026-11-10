@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>yumm lab · a small kitchen for side projects</title>
+  <meta name="description" content="yumm lab is a small kitchen for side projects. Nine engineers building tooling for coding agents: skills, setups and small helpers." />
+  <link rel="canonical" href="https://yummlab.site/" />
+  <meta name="theme-color" content="#f3f4f6" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yummlab.site/" />
+  <meta property="og:title" content="yumm lab · a small kitchen for side projects" />
+  <meta property="og:description" content="Ideas go in half-baked. A few come out tasty." />
+  <meta property="og:image" content="https://yummlab.site/og.png" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="th_TH" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="/tokens.css" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <script src="/vendor/gsap.min.js" defer></script>
+  <script src="/vendor/ScrollTrigger.min.js" defer></script>
+  <script src="/vendor/lenis.min.js" defer></script>
+  <script src="/i18n.js" defer></script>
+  <script src="/flask.js" defer></script>
+  <script src="/main.js" defer></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-gh" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4.5 11.5l7-7M6 4.5h5.5V10"/></symbol>
+    <symbol id="i-down" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8 3v10M3.5 8.5L8 13l4.5-4.5"/></symbol>
+    <symbol id="i-flask" viewBox="870 50 260 280"><path fill="none" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" d="M975 72V140L893 275Q880 310 918 310H1082Q1120 310 1107 275L1025 140V72M958 72H1042"/><path fill="currentColor" d="M902 238Q930 226 958 238T1014 238T1070 238T1098 238L1107 275Q1120 310 1082 310H918Q880 310 893 275Z"/></symbol>
+  </svg>
+
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+  <!-- Preloader (HUD). CSS failsafe hides it if JS never runs. -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__row mono">
+      <span>YUMM LAB // KITCHEN OS</span>
+      <span data-i18n="loader.status">STATUS // PREHEATING</span>
+    </div>
+    <div class="loader__stage">
+      <ul class="loader__stats mono">
+        <li><span>SKILLS</span><b data-curve="0.7">000%</b></li>
+        <li><span>SETUPS</span><b data-curve="1.3">000%</b></li>
+        <li><span>HELPERS</span><b data-curve="0.5">000%</b></li>
+        <li><span>PROMPTS</span><b data-curve="1.8">000%</b></li>
+      </ul>
+      <div class="loader__core">
+        <span class="loader__ring"></span>
+        <span class="loader__ring loader__ring--inner"></span>
+        <span class="hud hud--tl mono">BUILD // YUMM-001</span>
+        <span class="hud hud--tr mono">SYSTEM // STOVE</span>
+        <span class="hud hud--bl mono">PROTOCOL // TASTE</span>
+        <span class="hud hud--br mono">HEAT // <span id="loader-heat">000</span>°C</span>
+        <svg class="loader__flask" viewBox="870 50 260 280" aria-hidden="true">
+          <defs><clipPath id="clip-loader"><path d="M975 72V140L893 275Q880 310 918 310H1082Q1120 310 1107 275L1025 140V72Z"/></clipPath></defs>
+          <g clip-path="url(#clip-loader)"><g id="loader-fill"><path class="loader__liquid" d="M780 330q30-14 60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0V600H780Z"/></g></g>
+          <path class="loader__outline" id="loader-outline" pathLength="1" d="M975 72V140L893 275Q880 310 918 310H1082Q1120 310 1107 275L1025 140V72M958 72H1042"/>
+        </svg>
+      </div>
+      <ul class="loader__stats loader__stats--right mono">
+        <li><span>FLOUR</span><b data-curve="0.9">000%</b></li>
+        <li><span>SUGAR</span><b data-curve="0.6">000%</b></li>
+        <li><span>SALT</span><b data-curve="1.1">000%</b></li>
+        <li><span>PATIENCE</span><b data-curve="3.2">000%</b></li>
+      </ul>
+    </div>
+    <div class="loader__row loader__row--bottom">
+      <p class="loader__count"><span id="loader-num">000</span><span class="loader__pct">%</span></p>
+      <span class="mono">BATCH // 001</span>
+    </div>
+    <div class="loader__bar"><span id="loader-bar"></span></div>
+  </div>
+
+  <!-- Nav: floating dark pill + status strip -->
+  <header class="nav" id="nav">
+    <div class="nav__pill">
+      <a class="brand" href="#top" aria-label="yumm lab, back to top">
+        <span class="brand__mark"><svg aria-hidden="true"><use href="#i-flask"/></svg></span>
+        <span class="brand__word">YUMM<span>LAB</span></span>
+      </a>
+      <nav class="nav__links" aria-label="Sections">
+        <a href="#kitchen" data-i18n="nav.kitchen">Kitchen</a>
+        <a href="#stove" data-i18n="nav.stove">On the stove</a>
+        <a href="#recipe" data-i18n="nav.recipe">Recipe</a>
+        <a href="#crew" data-i18n="nav.crew">Crew</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      </nav>
+      <div class="nav__end">
+        <div class="lang" role="group" aria-label="Language" data-i18n-aria="lang.label">
+          <button type="button" class="lang__btn" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang__btn" data-lang="th" aria-pressed="false">TH</button>
+        </div>
+        <a class="btn btn--volt btn--sm nav__gh" href="https://github.com/yumm-lab" rel="noopener">
+          <svg class="btn__gh" aria-hidden="true"><use href="#i-gh"/></svg><span>GitHub</span>
+        </a>
+        <button class="nav__menu" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Menu" data-i18n-aria="nav.menu"><span></span><span></span></button>
+      </div>
+    </div>
+    <div class="menu" id="menu" hidden>
+      <nav aria-label="Sections">
+        <a href="#kitchen"><span class="mono">01</span><span data-i18n="nav.kitchen">Kitchen</span></a>
+        <a href="#stove"><span class="mono">02</span><span data-i18n="nav.stove">On the stove</span></a>
+        <a href="#recipe"><span class="mono">03</span><span data-i18n="nav.recipe">Recipe</span></a>
+        <a href="#crew"><span class="mono">04</span><span data-i18n="nav.crew">Crew</span></a>
+        <a href="#faq"><span class="mono">05</span><span data-i18n="nav.faq">FAQ</span></a>
+      </nav>
+      <a class="btn btn--volt" href="https://github.com/yumm-lab" rel="noopener"><svg class="btn__gh" aria-hidden="true"><use href="#i-gh"/></svg><span data-i18n="hero.cta">Follow on GitHub</span><span class="btn__icon"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    </div>
+    <div class="nav__status mono" id="nav-status">
+      <span><span data-i18n="status.city">BKK</span> <time id="clock" class="tabular">--:--:--</time> <span class="nav__muted">UTC+7</span></span>
+      <span class="nav__live"><span class="dot" aria-hidden="true"></span><span data-i18n="status.live">Cooking · first dish</span></span>
+      <span class="nav__muted nav__batch">BATCH 001</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero: full-bleed 3D particle flask, copy on top -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <canvas class="hero__canvas" id="particles" aria-hidden="true"></canvas>
+      <svg class="hero__fallback" viewBox="870 50 260 280" aria-hidden="true"><use href="#i-flask"/></svg>
+      <div class="shell hero__inner">
+        <div class="hero__copy">
+          <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="hero.tag">Skills · Setups · Small helpers</span></p>
+          <h1 class="hero__title" id="hero-title">
+            <span class="line"><span class="line__in tone" data-i18n="hero.l1">A small</span></span>
+            <span class="line"><span class="line__in" data-i18n="hero.l2">kitchen for</span></span>
+            <span class="line"><span class="line__in" data-i18n="hero.l3">side projects.</span></span>
+          </h1>
+          <p class="hero__lede" data-i18n="hero.lede">Nine engineers cooking up tooling for coding agents: skills, setups and small helpers. Ideas go in half-baked. A few come out tasty.</p>
+          <div class="hero__actions">
+            <a class="btn btn--dark btn--lg" href="https://github.com/yumm-lab" rel="noopener"><span data-i18n="hero.cta">Follow on GitHub</span><span class="btn__icon"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+            <a class="btn btn--ghost btn--lg" href="#stove"><span data-i18n="hero.cta2">What's cooking</span><span class="btn__icon"><svg aria-hidden="true"><use href="#i-down"/></svg></span></a>
+          </div>
+        </div>
+      </div>
+      <div class="shell hero__facts">
+        <dl class="facts">
+          <div><dt data-i18n="fact.1">Cooks in the kitchen</dt><dd>09</dd></div>
+          <div><dt data-i18n="fact.2">Dishes on the stove</dt><dd>04</dd></div>
+          <div><dt data-i18n="fact.3">First dish, still cooking</dt><dd>01</dd></div>
+          <div><dt data-i18n="fact.4">Kitchen opened</dt><dd>2026</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Ingredient ticker -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" id="ticker">
+        <div class="ticker__group">
+          <span data-i18n="tick.1">Agent skills</span><i></i><span data-i18n="tick.2">Claude Code setups</span><i></i><span data-i18n="tick.3">Installers</span><i></i><span data-i18n="tick.4">CLI helpers</span><i></i><span data-i18n="tick.5">Prompts</span><i></i><span data-i18n="tick.6">Tiny tools</span><i></i>
+        </div>
+        <div class="ticker__group">
+          <span data-i18n="tick.1">Agent skills</span><i></i><span data-i18n="tick.2">Claude Code setups</span><i></i><span data-i18n="tick.3">Installers</span><i></i><span data-i18n="tick.4">CLI helpers</span><i></i><span data-i18n="tick.5">Prompts</span><i></i><span data-i18n="tick.6">Tiny tools</span><i></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kitchen: why we exist -->
+    <section class="intro" id="kitchen" aria-labelledby="intro-title">
+      <div class="shell">
+        <div class="head">
+          <div class="head__main">
+            <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="intro.tag">Why a kitchen</span></p>
+            <h2 class="title" id="intro-title"><span class="tone" data-i18n="intro.t1">Side projects get messy.</span> <span class="words" data-i18n="intro.t2">The tools shouldn't.</span></h2>
+          </div>
+          <p class="head__aside" data-i18n="intro.aside">We kept rebuilding the same setups, retyping the same prompts and re-explaining how we work to coding agents. yumm lab is where we fix those things once, together.</p>
+        </div>
+        <ul class="pains" role="list">
+          <li class="pain">
+            <svg class="pain__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 19h20"/></svg>
+            <h3 data-i18n="pain.1.t">Same setup, every machine</h3>
+            <p data-i18n="pain.1.d">A new laptop shouldn't cost a day of config.</p>
+          </li>
+          <li class="pain">
+            <svg class="pain__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-4 4v-4H6a2 2 0 0 1-2-2z"/><path d="M9 10h.01M12 10h.01M15 10h.01"/></svg>
+            <h3 data-i18n="pain.2.t">Agents that forget</h3>
+            <p data-i18n="pain.2.d">Write our conventions down once, so agents follow them every time.</p>
+          </li>
+          <li class="pain">
+            <svg class="pain__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
+            <h3 data-i18n="pain.3.t">Steps on repeat</h3>
+            <p data-i18n="pain.3.d">If we've done it three times, it becomes a helper.</p>
+          </li>
+          <li class="pain">
+            <svg class="pain__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/></svg>
+            <h3 data-i18n="pain.4.t">Ideas with nowhere to go</h3>
+            <p data-i18n="pain.4.d">A shared place to try things, without a roadmap.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Statement band -->
+    <section class="band" aria-labelledby="band-title">
+      <div class="band__panel" id="band">
+        <div class="shell band__inner">
+          <h2 class="band__title" id="band-title">
+            <span class="band__thin" data-i18n="band.t1">Not a startup.</span>
+            <span class="band__bold" data-i18n="band.t2">Just a kitchen.</span>
+          </h2>
+          <p class="band__sub" data-i18n="band.sub">No roadmap, no deadlines. Just people who like making tools.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- On the stove -->
+    <section class="stove" id="stove" aria-labelledby="stove-title">
+      <div class="shell">
+        <div class="head">
+          <div class="head__main">
+            <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="stove.tag">On the stove</span></p>
+            <h2 class="title" id="stove-title"><span class="tone" data-i18n="stove.t1">Four things</span> <span data-i18n="stove.t2">we keep cooking.</span></h2>
+          </div>
+          <p class="head__aside" data-i18n="stove.aside">Everything starts as something one of us needed this week. Status is honest: nothing here is public yet.</p>
+        </div>
+        <ol class="rows" role="list">
+          <li class="row">
+            <span class="row__num mono">01</span>
+            <h3 class="row__title" data-i18n="dish.1.t">Skills</h3>
+            <p class="row__desc" data-i18n="dish.1.d">Instructions that teach coding agents how we like to work: how to debug, review, write and ship.</p>
+            <span class="chip chip--live"><span class="dot" aria-hidden="true"></span><span data-i18n="status.cooking">Cooking</span></span>
+          </li>
+          <li class="row">
+            <span class="row__num mono">02</span>
+            <h3 class="row__title" data-i18n="dish.2.t">Setups</h3>
+            <p class="row__desc" data-i18n="dish.2.d">Settings, plugins and an installer, so a fresh machine feels like home after one command.</p>
+            <span class="chip chip--live"><span class="dot" aria-hidden="true"></span><span data-i18n="status.cooking">Cooking</span></span>
+          </li>
+          <li class="row">
+            <span class="row__num mono">03</span>
+            <h3 class="row__title" data-i18n="dish.3.t">Small helpers</h3>
+            <p class="row__desc" data-i18n="dish.3.d">Scripts and CLIs that remove one annoying step. Usually the step that annoyed us this week.</p>
+            <span class="chip" data-i18n="status.prep">Prep</span>
+          </li>
+          <li class="row">
+            <span class="row__num mono">04</span>
+            <h3 class="row__title" data-i18n="dish.4.t">Experiments</h3>
+            <p class="row__desc" data-i18n="dish.4.d">Things we try just to see what happens. Most end up in the bin. That's the point.</p>
+            <span class="chip" data-i18n="status.always">Always on</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Recipe: pinned loop on wide screens -->
+    <section class="recipe" id="recipe" aria-labelledby="recipe-title">
+      <div class="recipe__pin">
+        <div class="shell recipe__inner">
+          <div class="head head--tight">
+            <div class="head__main">
+              <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="recipe.tag">The recipe</span></p>
+              <h2 class="title" id="recipe-title"><span class="tone" data-i18n="recipe.t1">A clear recipe</span> <span data-i18n="recipe.t2">for messy ideas.</span></h2>
+            </div>
+            <p class="head__aside" data-i18n="recipe.aside">No roadmap. Just four steps we repeat until something tastes right.</p>
+          </div>
+          <div class="loop" id="loop">
+            <svg class="loop__lines" id="loop-lines" aria-hidden="true">
+              <path class="loop__track" id="loop-track"/>
+              <path class="loop__seg" pathLength="1"/>
+              <path class="loop__seg" pathLength="1"/>
+              <path class="loop__seg" pathLength="1"/>
+            </svg>
+            <ol class="loop__cards" role="list">
+              <li class="card card--tl">
+                <span class="card__num">01</span>
+                <h3 class="card__title" data-i18n="step.1.t">Prep</h3>
+                <p class="card__text" data-i18n="step.1.d">Someone gets annoyed by something. That's the idea.</p>
+              </li>
+              <li class="card card--tr">
+                <span class="card__num">02</span>
+                <h3 class="card__title" data-i18n="step.2.t">Cook</h3>
+                <p class="card__text" data-i18n="step.2.d">Build the smallest thing that fixes it. Ugly is fine.</p>
+              </li>
+              <li class="card card--br">
+                <span class="card__num">03</span>
+                <h3 class="card__title" data-i18n="step.3.t">Taste</h3>
+                <p class="card__text" data-i18n="step.3.d">Use it ourselves for a few weeks. Keep it or bin it.</p>
+              </li>
+              <li class="card card--bl">
+                <span class="card__num">04</span>
+                <h3 class="card__title" data-i18n="step.4.t">Serve</h3>
+                <p class="card__text" data-i18n="step.4.d">Clean it up, license it properly, open it to everyone.</p>
+              </li>
+            </ol>
+            <div class="keycap" id="keycap" aria-hidden="true"><svg><use href="#i-flask"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Crew -->
+    <section class="crew" id="crew" aria-labelledby="crew-title">
+      <div class="shell crew__inner">
+        <div class="crew__copy">
+          <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="crew.tag">The crew</span></p>
+          <h2 class="title" id="crew-title"><span class="crew__num">9</span> <span class="tone" data-i18n="crew.t1">cooks.</span> <span data-i18n="crew.t2">One kitchen.</span></h2>
+          <p class="crew__text" data-i18n="crew.text">Engineers who share a GitHub org and a soft spot for tools that make the day a little smoother.</p>
+          <a class="btn btn--ghost" href="https://github.com/orgs/yumm-lab/people" rel="noopener"><span data-i18n="crew.link">See who's cooking</span><span class="btn__icon"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        </div>
+        <ul class="faces" role="list" aria-label="Nine yumm lab members" data-i18n-aria="crew.faces">
+          <li><img src="/assets/cooks/chunlapong.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/aretit2533.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/de-faults.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/def-teng.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/nihafis.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/pakpy443.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/phongchit-p.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/sathaporn-s.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+          <li><img src="/assets/cooks/suthidsa.png" alt="" width="96" height="96" loading="lazy" decoding="async" /></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="shell faq__inner">
+        <div class="faq__copy">
+          <p class="tag"><span class="tag__dash" aria-hidden="true"></span><span data-i18n="faq.tag">Still hungry?</span></p>
+          <h2 class="title" id="faq-title"><span class="tone" data-i18n="faq.t1">Questions</span> <span data-i18n="faq.t2">at the pass.</span></h2>
+          <p class="faq__note" data-i18n="faq.note">The pass is the counter where a dish waits before it goes out.</p>
+        </div>
+        <div class="faq__list">
+          <details class="qa">
+            <summary><span data-i18n="faq.1.q">What is yumm lab?</span><span class="qa__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.1.a">A GitHub organization where a small group of engineers keeps the side projects we build together. For now that means tooling for coding agents.</p>
+          </details>
+          <details class="qa">
+            <summary><span data-i18n="faq.2.q">Can I use anything yet?</span><span class="qa__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.2.a">Not yet. Our first project is private while we tidy it up. It goes public on GitHub when it's ready to serve.</p>
+          </details>
+          <details class="qa">
+            <summary><span data-i18n="faq.3.q">Why the kitchen thing?</span><span class="qa__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.3.a">Side projects behave like cooking. You start with what's in the fridge, taste as you go, and not every dish makes it to the table.</p>
+          </details>
+          <details class="qa">
+            <summary><span data-i18n="faq.4.q">How do I keep up?</span><span class="qa__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.4.a">Follow the yumm-lab org on GitHub. You'll see the first public dish the day it lands.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="shell foot__top">
+      <h2 class="foot__title"><span class="tone" data-i18n="cta.t1">Hungry?</span> <span data-i18n="cta.t2">Come see what's cooking.</span></h2>
+      <a class="btn btn--volt" href="https://github.com/yumm-lab" rel="noopener"><svg class="btn__gh" aria-hidden="true"><use href="#i-gh"/></svg><span data-i18n="cta.btn">Follow yumm-lab on GitHub</span><span class="btn__icon"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+    </div>
+    <div class="shell foot__cols">
+      <div>
+        <p class="foot__label mono" data-i18n="foot.kitchen">Kitchen</p>
+        <ul role="list">
+          <li><a href="#kitchen" data-i18n="nav.kitchen">Kitchen</a></li>
+          <li><a href="#stove" data-i18n="nav.stove">On the stove</a></li>
+          <li><a href="#recipe" data-i18n="nav.recipe">Recipe</a></li>
+          <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="foot__label mono" data-i18n="foot.find">Find us</p>
+        <ul role="list">
+          <li><a href="https://github.com/yumm-lab" rel="noopener">github.com/yumm-lab</a></li>
+          <li><a href="https://github.com/orgs/yumm-lab/people" rel="noopener" data-i18n="foot.people">People</a></li>
+        </ul>
+      </div>
+      <div class="foot__meta">
+        <p class="foot__label mono" data-i18n="foot.lang">Language</p>
+        <div class="lang lang--night" role="group" aria-label="Language" data-i18n-aria="lang.label">
+          <button type="button" class="lang__btn" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang__btn" data-lang="th" aria-pressed="false">TH</button>
+        </div>
+      </div>
+    </div>
+    <div class="foot__mark" id="foot-mark" aria-hidden="true">
+      <span class="foot__mark-outline">YUMM LAB</span>
+      <span class="foot__mark-fill" id="foot-fill">YUMM LAB</span>
+    </div>
+    <div class="shell foot__bar mono">
+      <span>© 2026 yumm lab</span>
+      <span data-i18n="foot.made">Made in a small kitchen</span>
+      <a href="#top" class="foot__top-link"><span data-i18n="foot.top">Back to top</span> ↑</a>
+    </div>
+  </footer>
+</body>
+</html>
