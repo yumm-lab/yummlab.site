@@ -22,15 +22,16 @@ python3 -m http.server 8765
 | `public/main.js` | Language switch, smooth scroll, reveals, recipe loop, nav. |
 | `public/flask.js` | The 3D particle flask mascot (plain WebGL, no library). |
 | `public/vendor/` | GSAP 3.15.0, ScrollTrigger, Lenis 1.3.27, pinned copies. |
-| `public/_headers` | Cloudflare Pages security and cache headers (CSP and friends). |
+| `public/_headers` | Cloudflare security and cache headers (CSP and friends). |
 
 ## Deploy
 
-Cloudflare Pages, project `yummlab-site` (see `wrangler.toml`):
+Cloudflare Workers static assets, Worker `yummlab-site` (see `wrangler.toml`).
+Pushing to `main` deploys through the Cloudflare Git integration. Manual deploy:
 
 ```sh
 npx wrangler login
-npx wrangler pages deploy
+npx wrangler deploy
 ```
 
 ## Security
