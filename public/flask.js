@@ -24,7 +24,7 @@ attribute float aKind;
 attribute float aCull; // uniform [0,1) from Math.random; GPU sin-hashes cluster near 1
 uniform float uTime, uAssemble, uYaw, uPitch, uRoll, uMouseOn, uScale, uDpr, uGrid, uAspect, uDot, uBlink, uSquish, uLevel, uEyeY, uBurst, uKeep;
 uniform vec2 uMouse, uRes, uCenter, uLook;
-uniform vec3 uInk, uLime, uOlive, uDeep, uBlush, uPaper;
+uniform vec3 uInk, uLime, uOlive, uDeep, uBlush, uPaper, uFace;
 varying float vAlpha;
 varying vec3 vColor;
 
@@ -147,7 +147,7 @@ void main() {
     a = front * step(0.35, uBlink);
     size = 2.6;
   } else {
-    col = uInk;
+    col = uFace; // eyes + smile
     a = front;
     size = 2.3;
   }
@@ -314,17 +314,22 @@ void main() {
 
     const U = {};
     ["uTime", "uAssemble", "uYaw", "uPitch", "uRoll", "uMouseOn", "uScale", "uDpr", "uGrid", "uAspect", "uDot", "uBlink", "uSquish",
-      "uLevel", "uEyeY", "uBurst", "uKeep", "uMouse", "uRes", "uCenter", "uLook", "uInk", "uLime", "uOlive", "uDeep", "uBlush", "uPaper"]
+      "uLevel", "uEyeY", "uBurst", "uKeep", "uMouse", "uRes", "uCenter", "uLook", "uInk", "uLime", "uOlive", "uDeep", "uBlush", "uPaper", "uFace"]
       .forEach((k) => { U[k] = gl.getUniformLocation(prog, k); });
 
-    const css = getComputedStyle(document.documentElement);
-    const colour = (name, fb) => toRGB(css.getPropertyValue(name).trim(), fb);
-    gl.uniform3fv(U.uInk, colour("--color-ink", "#1b1d21"));
-    gl.uniform3fv(U.uLime, colour("--color-accent", "#dcf23a"));
-    gl.uniform3fv(U.uDeep, colour("--color-accent-deep", "#bcd400"));
-    gl.uniform3fv(U.uOlive, colour("--color-olive", "#5f6b12"));
-    gl.uniform3fv(U.uBlush, colour("--color-blush", "#f08a8a"));
-    gl.uniform3fv(U.uPaper, colour("--color-surface", "#ffffff"));
+    // re-read on theme change: the same tokens hold different values in light and dark
+    function setColours() {
+      const css = getComputedStyle(document.documentElement);
+      const colour = (name, fb) => toRGB(css.getPropertyValue(name).trim(), fb);
+      gl.uniform3fv(U.uInk, colour("--color-flask-ink", "#1b1d21"));
+      gl.uniform3fv(U.uLime, colour("--color-accent", "#dcf23a"));
+      gl.uniform3fv(U.uDeep, colour("--color-accent-deep", "#bcd400"));
+      gl.uniform3fv(U.uOlive, colour("--color-olive", "#5f6b12"));
+      gl.uniform3fv(U.uBlush, colour("--color-blush", "#f08a8a"));
+      gl.uniform3fv(U.uPaper, colour("--color-flask-spark", "#ffffff"));
+      gl.uniform3fv(U.uFace, colour("--color-flask-face", "#1b1d21"));
+    }
+    setColours();
     gl.uniform1f(U.uLevel, LEVEL);
     gl.uniform1f(U.uEyeY, EYE_Y);
 
@@ -470,6 +475,8 @@ void main() {
     return {
       count: cloud.count,
       relayout: resize,
+      // the animation loop repaints on its own; reduced motion draws one still frame
+      recolor() { setColours(); if (reduce) draw(); },
       bounds,
       assemble() { state.target = 1; start(); },
       // true when (clientX, clientY) lands on the flask body

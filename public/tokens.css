@@ -28,6 +28,18 @@
   --color-on-night-rule: oklch(97% 0.003 250 / 0.14);
   --color-shadow: oklch(17% 0.006 250 / 0.1);
   --color-focus: oklch(55% 0.2 260);
+  --color-tone: oklch(17% 0.006 250 / 0.46);   /* muted half of a two-tone heading */
+  --color-hero-glow: oklch(91% 0.2 110 / 0.22);        /* volt haze behind the flask */
+  --color-hero-glow-mobile: oklch(91% 0.2 110 / 0.25);
+  --color-hero-grid: var(--color-rule-strong);
+  --color-flask-ink: var(--color-ink);                 /* flask glass and dust dots */
+  --color-flask-face: var(--color-ink);                /* eyes + smile */
+  --color-flask-spark: var(--color-surface);           /* eye highlight */
+
+  /* ink on volt surfaces: stays dark in both themes, the accent never flips */
+  --color-on-accent: oklch(17% 0.006 250);
+  --color-on-accent-2: oklch(17% 0.006 250 / 0.45);
+  --color-on-accent-hatch: oklch(17% 0.006 250 / 0.07);
 
   --grad-volt: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-deep) 45%, var(--color-night) 100%);
 
@@ -78,4 +90,42 @@
 
   --nav-top: 14px;
   --nav-h: 60px;
+}
+
+/* Dark: same 250 anchor, only lightness and chroma move. Raised surfaces get lighter.
+ * "night" (nav pill, menu, footer) sits above the paper so it still reads as its own layer.
+ * theme.js always sets data-theme, so there is no media-query copy of this block. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-paper: oklch(15% 0.006 250);
+  --color-paper-2: oklch(19% 0.006 250);
+  --color-surface: oklch(20% 0.006 250);
+  --color-ink: oklch(94% 0.004 250);
+  --color-ink-2: oklch(94% 0.004 250 / 0.66);
+  --color-ink-3: oklch(94% 0.004 250 / 0.52);
+  --color-rule: oklch(94% 0.004 250 / 0.12);
+  --color-rule-strong: oklch(94% 0.004 250 / 0.24);
+  --color-tone: oklch(94% 0.004 250 / 0.5);
+  /* lime over dark paper lifts it ~20x more than over light paper: thin the haze so the
+     flask keeps a dark ground, and soften the grid to the same weight as in light */
+  --color-hero-glow: oklch(89% 0.18 110 / 0.07);
+  --color-hero-glow-mobile: oklch(89% 0.18 110 / 0.08);
+  --color-hero-grid: oklch(94% 0.004 250 / 0.2);
+  /* the flask glows lime on dark, like an instrument screen; a notch under the accent so
+     80k dots don't glare, and still clearly lighter than the olive liquid */
+  --color-flask-ink: oklch(86% 0.17 112);
+  /* the face keeps its light-theme colours: dark eyes, white glint (they sit on the olive liquid) */
+  --color-flask-face: oklch(17% 0.006 250);
+  --color-flask-spark: oklch(99.5% 0.001 250);
+
+  --color-accent: oklch(89% 0.18 110);
+  --color-accent-deep: oklch(78% 0.17 114);
+  --color-accent-soft: oklch(89% 0.18 110 / 0.3);
+  --color-olive: oklch(62% 0.13 115);
+
+  --color-night: oklch(23% 0.006 250);
+  --color-night-2: oklch(29% 0.006 250);
+  --color-shadow: oklch(5% 0.006 250 / 0.5);
+  --color-focus: oklch(72% 0.15 260);
 }

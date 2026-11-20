@@ -19,6 +19,31 @@
 
   if (hasGsap) gsap.registerPlugin(ScrollTrigger);
 
+  /* ---------- theme ---------- */
+  // theme.js already set data-theme before paint; this keeps it in sync and owns the toggle.
+  const THEME_KEY = "yumm-theme";
+  const THEME_COLOR = { light: "#f3f4f6", dark: "#090b0e" }; // browser chrome = --color-paper
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+  const themeListeners = [];
+  const savedTheme = () => { const v = local.get(THEME_KEY); return v === "light" || v === "dark" ? v : null; };
+
+  function applyTheme(theme) {
+    root.dataset.theme = theme;
+    $('meta[name="theme-color"]')?.setAttribute("content", THEME_COLOR[theme]);
+    $$(".theme__btn").forEach((btn) => btn.setAttribute("aria-pressed", String(theme === "dark")));
+    themeListeners.forEach((fn) => fn(theme));
+  }
+
+  applyTheme(savedTheme() || (systemDark.matches ? "dark" : "light"));
+  $$(".theme__btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const next = root.dataset.theme === "dark" ? "light" : "dark";
+      local.set(THEME_KEY, next); // an explicit pick stops following the system
+      applyTheme(next);
+    });
+  });
+  systemDark.addEventListener("change", (e) => { if (!savedTheme()) applyTheme(e.matches ? "dark" : "light"); });
+
   /* ---------- i18n ---------- */
   const DICT = window.YUMM_I18N || { en: {} };
   const SUPPORTED = ["en", "th"];
@@ -267,6 +292,7 @@
       // copy width changes once web fonts land and when the language switches: refit
       document.fonts?.ready.then(() => flask.relayout());
       langListeners.push(() => requestAnimationFrame(() => flask.relayout()));
+      themeListeners.push(() => flask.recolor()); // dots are drawn from the colour tokens
       // the flask is a character: hover shows a pointer, click makes it squish and bounce
       const heroEl = $(".hero");
       const onFlask = (e) => !e.target.closest("a, button") && flask.hits(e.clientX, e.clientY);

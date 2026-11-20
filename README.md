@@ -19,7 +19,8 @@ python3 -m http.server 8765
 | `public/index.html` | Page markup. Text is keyed with `data-i18n`. |
 | `public/i18n.js` | EN / TH copy. Applied with `textContent` only. |
 | `public/styles.css`, `public/tokens.css` | Styles and design tokens (OKLCH). |
-| `public/main.js` | Language switch, smooth scroll, reveals, recipe loop, nav. |
+| `public/theme.js` | Sets light/dark before first paint (saved choice, else system). |
+| `public/main.js` | Language and theme switches, smooth scroll, reveals, recipe loop, nav. |
 | `public/flask.js` | The 3D particle flask mascot (plain WebGL, no library). |
 | `public/vendor/` | GSAP 3.15.0, ScrollTrigger, Lenis 1.3.27, pinned copies. |
 | `public/_headers` | Cloudflare security and cache headers (CSP and friends). |
