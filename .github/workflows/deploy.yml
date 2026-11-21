@@ -57,3 +57,6 @@ jobs:
           done
           code=$(curl -s -o /dev/null -w '%{http_code}' https://www.yummlab.site/)
           [ "$code" = 301 ] || { echo "::error::www redirect returned $code, want 301"; exit 1; }
+          # member pages come from their own Workers through service bindings
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://yummlab.site/de-faults/)
+          [ "$code" = 200 ] || { echo "::error::/de-faults/ returned $code, want 200"; exit 1; }

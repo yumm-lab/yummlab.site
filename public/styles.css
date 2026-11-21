@@ -365,7 +365,11 @@ button { font: inherit; color: inherit; }
 .faces { padding-bottom: 28px; }
 .faces li:nth-child(2n) { transform: translateY(28px); }
 .faces img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.05); opacity: 0.85; transition: filter var(--dur-long) var(--ease-out), opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out); }
-.faces li:hover img { filter: none; opacity: 1; transform: scale(1.06); }
+.faces li:hover img, .faces li:focus-within img { filter: none; opacity: 1; transform: scale(1.06); }
+/* tiles that open a member page; the li clips its children, so the focus ring sits on the li */
+.faces a { display: block; height: 100%; }
+.faces a:focus-visible { outline: none; }
+.faces li:has(a:focus-visible) { outline: 2px solid var(--color-focus); outline-offset: 3px; }
 
 /* ---------- faq ---------- */
 .faq { padding-block: 0 var(--section-gap); }
@@ -483,5 +487,5 @@ button { font: inherit; color: inherit; }
   *, *::before, *::after { animation-duration: 1ms !important; animation-iteration-count: 1 !important; transition-duration: 120ms !important; }
   .loader { display: none; }
   .ticker__track { animation: none; }
-  .row:hover .row__title, .faces li:hover img { transform: none; }
+  .row:hover .row__title, .faces li:hover img, .faces li:focus-within img { transform: none; }
 }

@@ -1,6 +1,6 @@
-# Cloudflare Workers static assets. src/worker.js only redirects www/http to
-# https://yummlab.site; all other requests go to ./public, where _headers sets
-# CSP, HSTS, nosniff and cache rules.
+# Cloudflare Workers static assets. src/worker.js redirects www/http to
+# https://yummlab.site and forwards member pages to their own Workers; all other
+# requests go to ./public, where _headers sets CSP, HSTS, nosniff and cache rules.
 name = "yummlab-site"
 main = "src/worker.js"
 compatibility_date = "2026-10-01"
@@ -15,3 +15,9 @@ routes = [
 directory = "./public"
 binding = "ASSETS"
 run_worker_first = true
+
+# Member pages, each its own repo and Worker (no routes of its own). The bound
+# Worker must be deployed before this one. Prefixes are mapped in src/worker.js.
+[[services]]
+binding = "DE_FAULTS"
+service = "yummlab-de-faults"   # repo yumm-lab/de-faults, path /de-faults/
