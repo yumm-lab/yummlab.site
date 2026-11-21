@@ -19,7 +19,7 @@ Start every edit with `./dev map`: it prints each file's sections with start lin
 ## Rules
 
 - **Copy**: every visible string is a `data-i18n="key"` (or `data-i18n-aria`) in `index.html` with the same key in both `en` and `th` of `i18n.js`. `main.js` applies it with `textContent`, so copy is plain text.
-- **CSP** (`public/_headers`): scripts and styles load from this origin as files; fonts only from Google Fonts. Put new JS/CSS in `public/*.js` / `*.css` and link it; style dynamic values through the CSSOM (`el.style.x = ...`).
+- **CSP** (`public/_headers`): scripts and styles load from this origin as files; fonts only from Google Fonts. Only outside script: the Cloudflare Web Analytics beacon Cloudflare injects (`static.cloudflareinsights.com`, reports to `cloudflareinsights.com`). Put new JS/CSS in `public/*.js` / `*.css` and link it; style dynamic values through the CSSOM (`el.style.x = ...`).
 - **Script order** in `index.html`: `theme.js` loads synchronously first (prevents theme flash); everything else is `defer`, vendor before `i18n.js`, `flask.js`, `main.js`.
 - **Secrets**: the site needs none. Deploy credentials live in Cloudflare and GitHub environment secrets. The pre-commit hook (enabled by `./dev init`) rejects credential-looking diffs.
 - `?debug` exposes `window.__flask` for layout tests.

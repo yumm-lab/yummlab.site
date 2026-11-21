@@ -39,4 +39,4 @@ Run both locally with the member repo checked out next to this one: `./dev worke
 - `.gitignore` blocks `.env*`, `.dev.vars`, keys and certificates.
 - A pre-commit hook in `.githooks/` rejects staged changes that look like credentials (`./dev init` enables it).
 - GitHub secret scanning and push protection are on for this repository.
-- The page sends a strict Content-Security-Policy (`public/_headers`): scripts only from this origin, fonts only from Google Fonts.
+- The page sends a strict Content-Security-Policy (`public/_headers`): scripts only from this origin (plus the Cloudflare Web Analytics beacon Cloudflare injects), fonts only from Google Fonts.
