@@ -14,6 +14,7 @@ on:
       - "public/**"
       - "src/**"
       - "wrangler.toml"
+      - "scripts/**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -36,6 +37,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      # i18n keys, local links, member wiring, JS syntax (same as ./dev check)
+      - name: Check
+        run: node scripts/check.mjs
 
       - name: Deploy with Wrangler
         uses: cloudflare/wrangler-action@953926a2e2182532811c01a25e53647d93bf07c0 # v4.1.3

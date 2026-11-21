@@ -1,0 +1,69 @@
+#!/bin/sh
+# One entry point for every task in this repo. Run `./dev` for the list.
+set -eu
+cd "$(dirname "$0")"
+
+WRANGLER="npx --yes wrangler@4.153.0" # same pin as .github/workflows/deploy.yml
+
+need() { command -v "$1" >/dev/null 2>&1 || { echo "dev: $1 not found ($2)" >&2; return 1; }; }
+
+usage() {
+  cat <<'EOF'
+./dev init            set up this clone (git hooks, tool check) then run check
+./dev serve [port]    static preview of public/ on http://localhost:8765 (no Worker)
+./dev worker [args]   wrangler dev: Worker + assets, https://localhost:8787 (args go to wrangler)
+./dev worker --member also run ../de-faults (member page) next to it
+./dev map             line-numbered section index of every source file (read sections, not files)
+./dev check           validate i18n keys, local links, member wiring, JS syntax
+./dev deploy          check, then deploy to Cloudflare (push to main does this via CI)
+EOF
+}
+
+cmd=${1:-help}
+[ $# -gt 0 ] && shift
+
+case "$cmd" in
+  init)
+    git config core.hooksPath .githooks
+    echo "dev: git hooks -> .githooks (secret scan on commit)"
+    need node "required: check, wrangler"
+    need npx "required: wrangler"
+    need python3 "optional: ./dev serve" || true
+    exec "$0" check
+    ;;
+  serve)
+    need python3 "install python3, or use ./dev worker"
+    port=${1:-8765}
+    echo "dev: http://localhost:$port  (add ?debug to expose the flask layout hook)"
+    cd public && exec python3 -m http.server "$port"
+    ;;
+  worker)
+    if [ "${1:-}" = "--member" ]; then
+      shift
+      [ -f ../de-faults/wrangler.toml ] || { echo "dev: need yumm-lab/de-faults checked out at ../de-faults" >&2; exit 1; }
+      set -- -c wrangler.toml -c ../de-faults/wrangler.toml "$@"
+    fi
+    # https: wrangler dev hands the Worker the route host, so plain http gets redirected
+    exec $WRANGLER dev --local-protocol https "$@"
+    ;;
+  map)
+    need node "install Node.js"
+    exec node scripts/map.mjs
+    ;;
+  check)
+    need node "install Node.js"
+    exec node scripts/check.mjs
+    ;;
+  deploy)
+    node scripts/check.mjs
+    exec $WRANGLER deploy
+    ;;
+  help | -h | --help)
+    usage
+    ;;
+  *)
+    echo "dev: unknown command '$cmd'" >&2
+    usage >&2
+    exit 1
+    ;;
+esac

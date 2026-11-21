@@ -10,12 +10,14 @@
 (() => {
   "use strict";
 
+  /* ---------- constants ---------- */
   // kinds: 0 glass · 1 liquid · 2 liquid surface · 3 bubble · 4 dust · 5 eye · 6 cheek · 7 smile · 8 eye sparkle
   const LEVEL = -0.1;
   const EYE_Y = -0.3;
   const EYE_X = 0.16;
   const SMILE_Y = -0.43;
 
+  /* ---------- vertex shader: assemble, flakes, cursor, shading ---------- */
   const VERT = `
 attribute vec3 aPos;
 attribute vec3 aNormal;
@@ -159,6 +161,7 @@ void main() {
   gl_PointSize = size * uDot * uDpr * persp * (1.0 + f * 1.6);
 }`;
 
+  /* ---------- fragment shader ---------- */
   const FRAG = `
 precision mediump float;
 varying float vAlpha;
@@ -170,6 +173,7 @@ void main() {
   gl_FragColor = vec4(vColor, vAlpha * smoothstep(0.5, 0.25, d));
 }`;
 
+  /* ---------- geometry: flask profile + point cloud ---------- */
   // Chubby Erlenmeyer profile (radius, y), from the inner rim over the lip, down the neck,
   // over the shoulder, down the body, round the bottom, to the bottom centre.
   const PROFILE = [
@@ -266,6 +270,7 @@ void main() {
     return { pos: new Float32Array(pos), nrm: new Float32Array(nrm), seed: new Float32Array(seed), kind: new Float32Array(kind), cull: new Float32Array(cull), count: seed.length };
   }
 
+  /* ---------- helpers ---------- */
   function toRGB(css, fallback) {
     const c = document.createElement("canvas");
     c.width = c.height = 1;
@@ -285,6 +290,7 @@ void main() {
     return s;
   }
 
+  /* ---------- create: WebGL setup, colours, state ---------- */
   function create(canvas, { reduce = false, layout } = {}) {
     const gl = canvas.getContext("webgl", { alpha: true, antialias: false, premultipliedAlpha: false, powerPreference: "high-performance" });
     if (!gl) throw new Error("WebGL unavailable");
@@ -346,6 +352,7 @@ void main() {
     };
     let raf = 0, visible = true, last = performance.now(), time = 0;
 
+    /* ---------- resize + render loop ---------- */
     function resize() {
       dpr = Math.min(2, window.devicePixelRatio || 1);
       const r = canvas.getBoundingClientRect();
@@ -422,6 +429,7 @@ void main() {
     }
     const start = () => { if (!raf && !reduce) { last = performance.now(); raf = requestAnimationFrame(frame); } };
 
+    /* ---------- input + lifecycle ---------- */
     const onMove = (e) => {
       const r = canvas.getBoundingClientRect();
       const x = e.clientX - r.left, y = e.clientY - r.top;
@@ -450,6 +458,7 @@ void main() {
     resize();
     start();
 
+    /* ---------- bounds: flask outline for layout ---------- */
     // CPU copy of the vertex transform for the glass outline (no flakes, no cursor push).
     // Used to keep the layout honest: the flask must fit its safe box.
     function bounds() {
@@ -472,6 +481,7 @@ void main() {
       return { top, bottom, left, right };
     }
 
+    /* ---------- public API ---------- */
     return {
       count: cloud.count,
       relayout: resize,
