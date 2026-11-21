@@ -63,8 +63,9 @@ jobs:
           code=$(curl -s -o /dev/null -w '%{http_code}' https://www.yummlab.site/)
           [ "$code" = 301 ] || { echo "::error::www redirect returned $code, want 301"; exit 1; }
           # /th/ is rendered by src/worker.js from index.html + i18n.js
-          curl -fsS --retry 5 --retry-delay 3 https://yummlab.site/th/ | grep -q '<html lang="th"' \
-            || { echo "::error::/th/ is not the Thai page"; exit 1; }
+          # (into a variable: grep -q in a pipe exits early, curl then fails with 23 under pipefail)
+          th=$(curl -fsS --retry 5 --retry-delay 3 https://yummlab.site/th/)
+          grep -q '<html lang="th"' <<<"$th" || { echo "::error::/th/ is not the Thai page"; exit 1; }
           # member pages come from their own Workers through service bindings
           code=$(curl -s -o /dev/null -w '%{http_code}' https://yummlab.site/de-faults/)
           [ "$code" = 200 ] || { echo "::error::/de-faults/ returned $code, want 200"; exit 1; }
