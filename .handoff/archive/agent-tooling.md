@@ -1,6 +1,6 @@
 ---
 title: Agent-friendly repo: ./dev task script, check, map, AGENTS.md
-status: open
+status: done
 severity: low
 next: 
 blocked_on: 
@@ -34,7 +34,7 @@ sections instead of whole files. No behaviour change to the site.
 ## Next steps
 
 - [x] dev, check.mjs, map.mjs, AGENTS.md, CLAUDE.md, README, CI step
-- [ ] Watch the first CI run after push: the new "Check" step must pass before "Deploy".
+- [x] First CI run after push (run 44921049824): Check, Deploy, Smoke check all passed.
 
 ## Verify
 
@@ -45,3 +45,4 @@ sections instead of whole files. No behaviour change to the site.
 
 - 2026-11-21 claude-dfff8cbc: created
 - 2026-11-21 claude-dfff8cbc: open — All local work done and verified (./dev check ok, ./dev map ok, flask.js diff comments only). Left open only for the first CI run after push: confirm the new Check step passes, then release done.
+- 2026-11-21 claude-dfff8cbc: done [evidence: ./dev check: ok; CI run 44921049824 on b2966c4: Check, Deploy with Wrangler, Smoke check success]
