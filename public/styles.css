@@ -104,7 +104,7 @@ button { font: inherit; color: inherit; }
   padding: var(--space-lg) var(--page-gutter) 0; background: var(--color-paper); color: var(--color-ink);
   background-image: linear-gradient(var(--color-rule) 1px, transparent 1px), linear-gradient(90deg, var(--color-rule) 1px, transparent 1px);
   background-size: 80px 80px; background-position: center;
-  animation: loader-failsafe 0s linear 2.5s forwards;
+  animation: loader-failsafe 0s linear 1.5s forwards;
 }
 .loader.is-driven { animation: none; }
 .loader.is-gone { display: none; }

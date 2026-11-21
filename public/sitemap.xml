@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://yummlab.site/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://yummlab.site/" />
+    <xhtml:link rel="alternate" hreflang="th" href="https://yummlab.site/th/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://yummlab.site/" />
+  </url>
+  <url>
+    <loc>https://yummlab.site/th/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://yummlab.site/" />
+    <xhtml:link rel="alternate" hreflang="th" href="https://yummlab.site/th/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://yummlab.site/" />
+  </url>
+  <url>
+    <loc>https://yummlab.site/de-faults/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://yummlab.site/de-faults/" />
+    <xhtml:link rel="alternate" hreflang="th" href="https://yummlab.site/de-faults/th/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://yummlab.site/de-faults/" />
+  </url>
+  <url>
+    <loc>https://yummlab.site/de-faults/th/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://yummlab.site/de-faults/" />
+    <xhtml:link rel="alternate" hreflang="th" href="https://yummlab.site/de-faults/th/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://yummlab.site/de-faults/" />
+  </url>
+</urlset>

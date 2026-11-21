@@ -1,6 +1,6 @@
 // Copy for both languages. Keys match data-i18n / data-i18n-aria in index.html.
 // Applied with textContent only, never innerHTML.
-window.YUMM_I18N = {
+globalThis.YUMM_I18N = {
   en: {
     "meta.title": "yumm lab · a small kitchen for side projects",
     "meta.desc": "yumm lab is a small kitchen for side projects. Fourteen engineers building tooling for coding agents: skills, setups and small helpers.",

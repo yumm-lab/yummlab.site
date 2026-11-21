@@ -6,6 +6,9 @@
   <title>yumm lab · a small kitchen for side projects</title>
   <meta name="description" content="yumm lab is a small kitchen for side projects. Fourteen engineers building tooling for coding agents: skills, setups and small helpers." />
   <link rel="canonical" href="https://yummlab.site/" />
+  <link rel="alternate" hreflang="en" href="https://yummlab.site/" />
+  <link rel="alternate" hreflang="th" href="https://yummlab.site/th/" />
+  <link rel="alternate" hreflang="x-default" href="https://yummlab.site/" />
   <meta name="theme-color" content="#f3f4f6" />
   <script src="/theme.js"></script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -17,6 +20,32 @@
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="th_TH" />
   <meta name="twitter:card" content="summary_large_image" />
+  <!-- Structured data: a data block, never executed, so CSP script-src does not apply -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://yummlab.site/#website",
+        "name": "yumm lab",
+        "alternateName": ["yummlab", "yumm-lab"],
+        "url": "https://yummlab.site/",
+        "inLanguage": ["en", "th"],
+        "publisher": { "@id": "https://yummlab.site/#org" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://yummlab.site/#org",
+        "name": "yumm lab",
+        "alternateName": ["yummlab", "yumm-lab"],
+        "url": "https://yummlab.site/",
+        "description": "A small kitchen for side projects. Fourteen engineers building tooling for coding agents: skills, setups and small helpers.",
+        "sameAs": ["https://github.com/yumm-lab"]
+      }
+    ]
+  }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

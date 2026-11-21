@@ -29,9 +29,9 @@ for (const f of ["public/theme.js", "public/i18n.js", "public/main.js", "public/
 }
 
 // --- i18n: keys in index.html exist in both languages, and en/th agree ---
-const sandbox = { window: {} };
+const sandbox = {}; // i18n.js assigns globalThis.YUMM_I18N, which is the sandbox itself
 vm.runInNewContext(read("public/i18n.js"), sandbox);
-const dict = sandbox.window.YUMM_I18N ?? {};
+const dict = sandbox.YUMM_I18N ?? {};
 const langs = ["en", "th"];
 for (const lang of langs) if (!dict[lang]) errors.push(`i18n: missing language "${lang}" in public/i18n.js`);
 
@@ -45,7 +45,7 @@ if (dict.en && dict.th) {
   for (const key of Object.keys(dict.en)) if (!(key in dict.th)) errors.push(`i18n: "${key}" in en, missing in th`);
   for (const key of Object.keys(dict.th)) if (!(key in dict.en)) errors.push(`i18n: "${key}" in th, missing in en`);
   // keys may also be read from JS, e.g. t(lang, "meta.title")
-  const js = read("public/main.js") + read("public/flask.js");
+  const js = read("public/main.js") + read("public/flask.js") + worker;
   for (const key of Object.keys(dict.en)) {
     if (!htmlKeys.has(key) && !js.includes(`"${key}"`)) warnings.push(`i18n: "${key}" is never used`);
   }

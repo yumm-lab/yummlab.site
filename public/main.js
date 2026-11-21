@@ -50,7 +50,17 @@
   const t = (lang, key) => (DICT[lang] && DICT[lang][key]) ?? DICT.en[key];
   const langListeners = [];
 
+  // Each language has its own URL so search engines index both: / is English,
+  // /th/ is Thai (the Worker serves it with the Thai copy already in place).
+  const LANG_PATH = { en: "/", th: "/th/" };
+  const syncUrl = (lang) => {
+    if (location.pathname === LANG_PATH[lang]) return;
+    if (!Object.values(LANG_PATH).includes(location.pathname)) return; // e.g. local file preview
+    history.replaceState(null, "", LANG_PATH[lang] + location.search + location.hash);
+  };
+
   function initialLang() {
+    if (location.pathname === LANG_PATH.th) return "th";
     const saved = local.get("yumm-lang");
     if (SUPPORTED.includes(saved)) return saved;
     return (navigator.language || "").toLowerCase().startsWith("th") ? "th" : "en";
@@ -74,6 +84,7 @@
 
   let currentLang = initialLang();
   applyLang(currentLang);
+  syncUrl(currentLang);
   $$(".lang__btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const next = btn.dataset.lang;
@@ -81,6 +92,7 @@
       currentLang = next;
       local.set("yumm-lang", next);
       applyLang(next);
+      syncUrl(next);
       if (hasGsap) ScrollTrigger.refresh();
     });
   });
@@ -359,7 +371,9 @@
   }
 
   const firstVisit = session.get("yumm-preheated") !== "1";
-  if (!loader || !animate || !firstVisit) {
+  // On a slow network the CSS failsafe may already have hidden the loader; don't bring it back.
+  const failsafeFired = loader && getComputedStyle(loader).visibility === "hidden";
+  if (!loader || !animate || !firstVisit || failsafeFired) {
     finishLoader();
     heroEntrance(0.05);
   } else {
@@ -388,17 +402,11 @@
       stats.forEach((el) => { el.textContent = `${pad(100 * Math.pow(p, parseFloat(el.dataset.curve)))}%`; });
     };
     render();
-    const pageReady = new Promise((resolve) => {
-      if (document.readyState === "complete") resolve();
-      else window.addEventListener("load", resolve, { once: true });
-    });
-    const capped = Promise.race([pageReady, new Promise((r) => setTimeout(r, 1800))]);
-    gsap.to(counter, { value: 72, duration: 1, ease: "power2.out", onUpdate: render });
-    capped.then(() => {
-      gsap.timeline()
-        .to(counter, { value: 100, duration: 0.5, ease: "power2.inOut", overwrite: true, onUpdate: render })
-        .to(loader, { yPercent: -100, duration: 1, ease: "expo.inOut", onComplete: finishLoader }, "+=0.2")
-        .add(() => heroEntrance(0), "-=0.55");
-    });
+    // Fixed ~1.2 s show, not tied to window.load: the hero is the page's largest
+    // paint, and holding it behind the loader costs LCP (search ranking).
+    gsap.timeline()
+      .to(counter, { value: 100, duration: 0.6, ease: "power2.inOut", onUpdate: render })
+      .to(loader, { yPercent: -100, duration: 0.6, ease: "expo.inOut", onComplete: finishLoader }, "+=0.05")
+      .add(() => heroEntrance(0), "-=0.4");
   }
 })();
